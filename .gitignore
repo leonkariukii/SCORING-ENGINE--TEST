@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+
+output/
+uploads/*
+!uploads/.gitkeep
+
+.docker-config/
+.venv/
+venv/
+
+.DS_Store
+Thumbs.db

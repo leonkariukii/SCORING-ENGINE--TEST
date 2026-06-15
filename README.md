@@ -1,91 +1,171 @@
 # Automated Loan Scoring Engine
 
-This project runs the loan scoring engine inside Docker, which makes it easier to use from Ubuntu/WSL or a server environment.
+This project scores loan applicants from a CSV file and writes the result to another CSV file. It can run directly with Python, but the recommended way is Docker because Docker gives the project the same environment every time.
 
-## Files
+## Project Files
 
-- `data/customers.csv` - applicant input file
-- `output/scoring_results.csv` - generated scoring results
-- `app/scoring_engine.py` - scoring logic
-- `samples/sample_bank_statement.pdf` - fictional bank statement for PDF upload testing
-- `uploads/` - place bank statement PDFs here before processing
-- `Dockerfile` - container definition
-- `docker-compose.yml` - simple container runner
+- `app/scoring_engine.py` - the scoring logic
+- `data/customers.csv` - the main customer input file
+- `data/customers_second_sample.csv` - another sample input file for testing
+- `output/scoring_results.csv` - generated result file after the engine runs
+- `Dockerfile` - instructions for building the Docker image
+- `docker-compose.yml` - simple Docker runner
+- `samples/sample_bank_statement.pdf` - fictional PDF statement for later upload testing
+- `uploads/` - folder for future uploaded PDF statements
 
-## Run With Docker Compose
+## Run From Ubuntu/WSL
+
+Open Ubuntu and go to the project folder:
+
+```bash
+cd "/mnt/c/Users/USER/Documents/Scoring Engine"
+```
+
+Check that the files are there:
+
+```bash
+ls
+```
+
+Run the scoring engine:
 
 ```bash
 docker compose up --build
 ```
 
-On Windows PowerShell, you can also run:
+View the results:
 
-```powershell
-.\run-docker.ps1
+```bash
+cat output/scoring_results.csv
 ```
+
+If Docker says it cannot connect, open Docker Desktop on Windows first, wait until Docker is running, then run the command again.
 
 ## Run With Plain Docker
 
 ```bash
 docker build -t scoring-engine .
+
 docker run --rm \
   -v "$PWD/data:/scoring-engine/data" \
   -v "$PWD/output:/scoring-engine/output" \
   scoring-engine
 ```
 
-## Run From WSL Ubuntu
+## Try The Second Sample File
 
-If Ubuntu is not installed yet:
-
-```powershell
-wsl --install -d Ubuntu
-```
-
-Restart the machine if Windows asks you to, then open Ubuntu and run:
-
-```bash
-cd /mnt/c/Users/USER/Documents/Scoring\ Engine
-docker compose up --build
-```
-
-If Docker says it cannot connect to the Docker API, start Docker Desktop and make sure WSL integration is enabled for Ubuntu.
-
-After running, open:
+The engine normally reads:
 
 ```text
-output/scoring_results.csv
+data/customers.csv
 ```
 
-## Output Analysis
+To test the second sample file without deleting the original, run:
+
+```bash
+docker compose run --rm \
+  -e SCORING_INPUT_FILE=/scoring-engine/data/customers_second_sample.csv \
+  scoring-engine
+```
+
+Then view the results:
+
+```bash
+cat output/scoring_results.csv
+```
+
+## Edit Customer Data
+
+From Ubuntu:
+
+```bash
+nano data/customers.csv
+```
+
+Save in nano:
+
+```text
+Ctrl + O
+Enter
+Ctrl + X
+```
+
+Or open the folder in Windows File Explorer:
+
+```bash
+explorer.exe .
+```
+
+Then edit `data/customers.csv` with Notepad or VS Code.
+
+## Upload Changes To GitHub
+
+After changing files, run:
+
+```bash
+git status
+git add .
+git commit -m "Describe what changed"
+git push
+```
+
+Example:
+
+```bash
+git add .
+git commit -m "Improve Docker instructions"
+git push
+```
+
+## Run More Than One Engine
+
+Copy the project folder:
+
+```bash
+cd "/mnt/c/Users/USER/Documents"
+cp -r "Scoring Engine" "Scoring Engine 2"
+```
+
+Run the first engine:
+
+```bash
+cd "/mnt/c/Users/USER/Documents/Scoring Engine"
+docker compose -p scoring-engine-1 up --build
+```
+
+Run the second engine in another Ubuntu window:
+
+```bash
+cd "/mnt/c/Users/USER/Documents/Scoring Engine 2"
+docker compose -p scoring-engine-2 up --build
+```
+
+The `-p` value gives each Docker run its own project name.
+
+## Output Fields
 
 The results include:
 
-- final score
+- score
 - risk band
 - approval decision
 - debt-to-income percentage
-- disposable income after debt payments
-- scoring reasons and automatic rejection reasons
+- monthly disposable income
+- scoring reasons
+- automatic rejection reasons
 
-## PDF Statement Testing
+## Future PDF Upload Flow
 
-A fictional sample bank statement is included here:
+The sample PDF is here:
 
 ```text
 samples/sample_bank_statement.pdf
 ```
 
-To test the upload flow manually for now, copy a PDF into:
-
-```text
-uploads/
-```
-
-For the next phase, this PDF can be used as the upload test file. The practical flow will be:
+The future upload flow can be:
 
 1. Upload a customer bank statement PDF.
-2. Extract statement details such as income deposits, loan repayments, total debits, total credits, average balance, and closing balance.
-3. Convert those extracted values into scoring inputs.
+2. Extract income deposits, loan repayments, debits, credits, and balances.
+3. Convert the extracted values into scoring inputs.
 4. Run the scoring engine.
-5. Save both the extracted financial analysis and the final credit decision.
+5. Save the financial analysis and final credit decision.
