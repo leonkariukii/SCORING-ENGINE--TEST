@@ -1,0 +1,9 @@
+services:
+  scoring-engine:
+    build: .
+    volumes:
+      - ./data:/scoring-engine/data
+      - ./output:/scoring-engine/output
+    environment:
+      SCORING_INPUT_FILE: /scoring-engine/data/customers.csv
+      SCORING_OUTPUT_FILE: /scoring-engine/output/scoring_results.csv

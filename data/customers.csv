@@ -1,0 +1,7 @@
+customer_id,name,age,monthly_income,employment_years,existing_loans,monthly_debt_payments,credit_history_years,missed_payments_last_12_months
+CUST-001,Amina Otieno,30,80000,4,1,12000,5,0
+CUST-002,Brian Kariuki,23,42000,1,2,18000,1,2
+CUST-003,Grace Wanjiku,41,150000,9,0,0,8,0
+CUST-004,Leonard Kariuki,23,100000,0,0,0,0,0
+CUST-005,Leah Wangari,47,50000,10,5,2,100000,5,0
+CUST-006,Lawrence Wakanyi,52,800000,15,2,200000,5,3
