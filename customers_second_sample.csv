@@ -1,0 +1,5 @@
+customer_id,name,age,monthly_income,employment_years,existing_loans,monthly_debt_payments,credit_history_years,missed_payments_last_12_months
+CUST-101,Peter Mwangi,35,95000,6,1,15000,4,0
+CUST-102,Mercy Achieng,29,38000,2,3,21000,2,1
+CUST-103,David Njoroge,44,180000,12,0,0,10,0
+CUST-104,Faith Wambui,21,25000,0.5,1,10000,0.5,4
